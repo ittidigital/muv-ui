@@ -1,0 +1,49 @@
+name: Package and Release
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run npm pack
+        run: npm pack
+
+      - name: Extract version from package.json
+        id: package_version
+        run: echo "::set-output name=VERSION::$(node -p "require('./package.json').version")"
+
+      - name: Install GitHub CLI
+        run: sudo apt-get install gh
+
+      - name: Determine unique tag
+        id: unique_tag
+        run: |
+          VERSION=$(echo ${{ steps.package_version.outputs.VERSION }})
+          TAG=$VERSION
+          COUNTER=1
+          while gh release view $TAG &> /dev/null; do
+            TAG="${VERSION}.${COUNTER}"
+            ((COUNTER=COUNTER+1))
+          done
+          echo "::set-output name=TAG::$TAG"
+
+      - name: Create GitHub Release
+        run: gh release create ${{ steps.unique_tag.outputs.TAG }} --title "Release ${{ steps.unique_tag.outputs.TAG }}" --notes "Automated release based on version ${{ steps.package_version.outputs.VERSION }}."
+
+      - name: Cleanup
+        run: rm *.tgz
