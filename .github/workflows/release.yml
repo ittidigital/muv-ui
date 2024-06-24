@@ -33,12 +33,12 @@ jobs:
       - name: Determine unique tag
         id: unique_tag
         run: |
-          VERSION=$(echo ${{ steps.package_version.outputs.VERSION }})
+          VERSION=$(node -p "require('./package.json').version")
           TAG=$VERSION
           COUNTER=1
           while gh release view $TAG &> /dev/null; do
-            TAG="${VERSION}.${COUNTER}"
-            ((COUNTER=COUNTER+1))
+        TAG="${VERSION}.${COUNTER}"
+        ((COUNTER=COUNTER+1))
           done
           echo "::set-output name=TAG::$TAG"
 
