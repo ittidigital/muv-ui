@@ -96,7 +96,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           PACKAGE_FILE=$(ls *.tgz)
-          gh release create ${{ env.VERSION }} --title "Release ${{ env.VERSION }}" --notes "Automated release based on version ${{ env.VERSION }}" --draft $PACKAGE_FILE
+          gh release create ${{ env.VERSION }} --title "Release ${{ env.VERSION }}" --notes "Automated release based on version ${{ env.VERSION }}" $PACKAGE_FILE
 
       - name: Cleanup
         run: rm *.tgz
