@@ -42,8 +42,10 @@ jobs:
           done
           echo "::set-output name=TAG::$TAG"
 
-      - name: Create GitHub Release
-        run: gh release create ${{ steps.unique_tag.outputs.TAG }} --title "Release ${{ steps.unique_tag.outputs.TAG }}" --notes "Automated release based on version ${{ steps.package_version.outputs.VERSION }}."
+- name: Create GitHub Release
+  run: gh release create ${{ steps.unique_tag.outputs.TAG }} --title "Release ${{ steps.unique_tag.outputs.TAG }}" --notes "Automated release based on version ${{ steps.package_version.outputs.VERSION }}."
+  env:
+    GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Cleanup
         run: rm *.tgz
