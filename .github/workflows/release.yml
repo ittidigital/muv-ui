@@ -1,12 +1,12 @@
-name: Package and Release
+# name: Package and Release
 
-on:
-  push:
-    branches:
-      - main
+# on:
+#   push:
+#     branches:
+#       - main
 
-permissions:
-  contents: write  # This line grants permission to create releases
+# permissions:
+#   contents: write  # This line grants permission to create releases
 # jobs:
 #   release:
 #     runs-on: ubuntu-latest
