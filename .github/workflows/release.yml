@@ -5,6 +5,11 @@ on:
     branches:
       - main
 
+      permissions:
+  contents: write
+  issues: write
+
+
 jobs:
   release:
     runs-on: ubuntu-latest
@@ -15,7 +20,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '14'
+          node-version: '18'
 
       - name: Install dependencies
         run: npm install
@@ -43,9 +48,10 @@ jobs:
           echo "::set-output name=TAG::$TAG"
 
       - name: Create GitHub Release
-        run: gh release create ${{ steps.unique_tag.outputs.TAG }} --title "Release ${{ steps.unique_tag.outputs.TAG }}" --notes "Automated release based on version ${{ steps.package_version.outputs.VERSION }}."
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          export GITHUB_TOKEN=${{ secrets.GITHUB_TOKEN }}
+          gh release create ${{ steps.unique_tag.outputs.TAG }} --title "Release ${{ steps.unique_tag.outputs.TAG }}" --notes "Automated release based on version ${{ steps.package_version.outputs.VERSION }}."
+        shell: /usr/bin/bash -e {0}
 
       - name: Cleanup
         run: rm *.tgz
